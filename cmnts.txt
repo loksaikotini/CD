@@ -1,0 +1,146 @@
+STEP 1 — Open Ubuntu (WSL)
+
+Open the Ubuntu app from Start menu.
+
+✅ STEP 2 — Install flex + gcc (only once)
+sudo apt update
+sudo apt install flex
+sudo apt install gcc
+
+✅ STEP 3 — Create your lex file
+nano comments.l
+
+✅ STEP 4 — Paste this FULL WORKING CODE
+
+Your original code had two issues:
+
+You didn’t escape /* and */ properly
+
+Some regex patterns were too restrictive
+
+Missing yywrap()
+
+Below is the correct and working LEX program:
+
+%{
+    #include <stdio.h>
+%}
+
+%%
+
+"//".*                    { printf("%s\n", yytext); }
+
+"/*"([^*]|\*+[^/])*\*+/   { printf("%s\n", yytext); }
+
+/* Ignore everything else */
+.|\n                     { /* ignore */ }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main()
+{
+    yylex();
+    return 0;
+}
+
+
+✔ This handles
+
+Single-line comments // comment
+
+Multi-line comments /* comment */
+✔ Prints comment content
+✔ Ignores all other text
+
+⭐ If you want EXACT BEHAVIOR like your example output
+
+(where only words after // or inside /* */ are printed),
+use this simpler code below:
+
+%{
+    #include <stdio.h>
+%}
+
+%%
+
+"//"[a-zA-Z0-9 ]*     { printf("%s\n", yytext + 2); }
+
+"/*"[a-zA-Z0-9 ]*"*/" { 
+                          char *s = yytext;
+                          s[strlen(s)-2] = '\0';   // remove */
+                          printf("%s\n", s + 2);   // skip /*
+                      }
+
+.|\n                  { /* ignore */ }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    yylex();
+    return 0;
+}
+
+
+✔ This prints only comment content (not comment symbols).
+✔ Matches your expected output.
+
+✅ STEP 5 — Save the file
+Ctrl + O
+ENTER
+Ctrl + X
+
+
+Check:
+
+ls
+
+
+You must see:
+
+comments.l
+
+✅ STEP 6 — Run flex
+flex comments.l
+
+
+This produces:
+
+lex.yy.c
+
+✅ STEP 7 — Compile
+
+You can use either:
+
+Option 1 (recommended)
+gcc lex.yy.c -lfl -o comments
+
+Option 2 (since we added yywrap)
+gcc lex.yy.c -o comments
+
+✅ STEP 8 — Run program
+./comments
+
+Now test:
+Input:
+Hello //world
+
+
+Output:
+
+world
+
+Input:
+hai /*friend*/
+
+
+Output:
+
+friend
