@@ -1,0 +1,107 @@
+STEP 1 — Open Ubuntu (WSL)
+
+Open the Ubuntu app on Windows.
+
+✅ STEP 2 — Install flex + gcc (only once)
+sudo apt update
+sudo apt install flex
+sudo apt install gcc
+
+✅ STEP 3 — Create your Lex file
+nano wordcount.l
+
+✅ STEP 4 — Paste the FULL WORKING CODE
+
+Paste using Shift + Ctrl + V:
+
+%{
+#include <stdio.h>
+
+int wordCount = 0;
+int lineCount = 0;
+%}
+
+%%
+
+\n              { lineCount++; }
+[ \t]+          { /* ignore spaces/tabs */ }
+[a-zA-Z0-9_]+   { wordCount++; }
+.               { /* ignore all other characters */ }
+
+%%
+
+int yywrap() { return 1; }
+
+int main() {
+    printf("Enter text:\n");
+    yylex();
+    printf("\nTotal Lines : %d\n", lineCount);
+    printf("Total Words : %d\n", wordCount);
+    return 0;
+}
+
+
+✔ Added yywrap() → required
+✔ Added "Enter text:" prompt
+✔ Everything works in WSL
+
+✅ STEP 5 — Save the file
+Ctrl + O
+ENTER
+Ctrl + X
+
+
+Check with:
+
+ls
+
+✅ STEP 6 — Run flex
+flex wordcount.l
+
+
+This generates:
+
+lex.yy.c
+
+✅ STEP 7 — Compile with gcc
+
+Either works:
+
+gcc lex.yy.c -lfl -o wordcount
+
+
+or
+
+gcc lex.yy.c -o wordcount
+
+
+(because we defined yywrap)
+
+No errors → GOOD.
+
+✅ STEP 8 — Run your wordcount program
+./wordcount
+
+
+It prints:
+
+Enter text:
+
+
+Now type:
+
+Hello world
+This is a test
+
+
+Then press:
+
+👉 Ctrl + D (this ends input in Linux)
+🎉 EXPECTED OUTPUT
+Enter text:
+Hello world
+This is a test
+^D
+
+Total Lines : 2
+Total Words : 6
