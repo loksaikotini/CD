@@ -1,0 +1,135 @@
+STEP 1 — Open Ubuntu (WSL)
+
+Open the Ubuntu app on Windows.
+
+✅ STEP 2 — Install flex + gcc (only once)
+sudo apt update
+sudo apt install flex
+sudo apt install gcc
+
+
+Check installation:
+
+flex --version
+gcc --version
+
+✅ STEP 3 — Create your Lex file
+
+Run:
+
+nano program.l
+
+
+This opens nano editor.
+
+✅ STEP 4 — Paste THIS FULL WORKING Lex program
+
+Paste the following exact code:
+
+%{
+#include <stdio.h>
+int i, j;
+%}
+
+%%
+
+[0-9]*\.[0-9]+   {
+                    for(i = 0; yytext[i] != '\0'; i++) {
+                        if(yytext[i] == '.') {
+
+                            // Print characters before decimal
+                            for(j = 0; j < i; j++) {
+                                printf("%c", yytext[j]);
+                            }
+
+                            printf("\n");
+                            break;
+                        }
+                    }
+                 }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    yylex();
+    return 0;
+}
+
+
+✔ I added yywrap()
+✔ I added a proper main()
+✔ This code WILL compile with flex and gcc
+
+✅ STEP 5 — Save the file
+
+Press:
+
+Ctrl + O
+ENTER
+Ctrl + X
+
+
+Check:
+
+ls
+
+
+You should see:
+
+program.l
+
+✅ STEP 6 — Run flex
+flex program.l
+
+
+This generates:
+
+lex.yy.c
+
+
+Verify:
+
+ls
+
+✅ STEP 7 — Compile the generated C code
+
+Use either:
+
+gcc lex.yy.c -lfl -o program
+
+
+or (because we added yywrap):
+
+gcc lex.yy.c -o program
+
+
+✔ No errors will appear.
+
+✅ STEP 8 — Run your Lexical Analyzer
+./program
+
+
+Now type numeric input with decimal:
+
+Example 1:
+
+123.456
+
+
+Output:
+
+123
+
+
+Example 2:
+
+00.99
+
+
+Output:
+
+00
