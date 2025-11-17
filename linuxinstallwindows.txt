@@ -1,0 +1,76 @@
+STEP 1 — Open PowerShell as Administrator
+
+Press Windows key
+
+Type PowerShell
+
+Right-click → Run as administrator
+
+You MUST see:
+
+Administrator: Windows PowerShell
+
+✅ STEP 2 — Run the WSL Install Command
+
+Paste this command:
+
+wsl --install
+
+
+Then press ENTER.
+
+📌 What this command does automatically:
+
+Enables WSL feature
+
+Enables Virtual Machine Platform
+
+Installs WSL2
+
+Downloads and installs Ubuntu
+
+Sets Ubuntu as default distro
+
+You don’t need to install anything manually.
+
+✅ STEP 3 — Restart your computer
+
+WSL will prompt:
+
+The requested operation is successful. Changes will not take effect until the system is rebooted.
+
+
+Restart your PC.
+
+⭐ STEP 4 — After restart, Linux will open automatically
+
+You will see:
+
+Installing, this may take a few minutes...
+Please create a UNIX username:
+
+
+Enter:
+
+Username → e.g., user
+
+Password (twice)
+
+Done ✔
+
+Welcome to Ubuntu Linux inside Windows
+
+
+METHOD 3 — Install Linux from Microsoft Store only
+
+This is also valid.
+
+Steps:
+
+Open Microsoft Store
+
+Search Ubuntu
+
+Click Install
+
+Launch → create username + password
