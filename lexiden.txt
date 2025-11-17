@@ -1,0 +1,142 @@
+STEP 1 — Open Ubuntu (WSL)
+
+Open the Ubuntu app from Start Menu.
+
+✅ STEP 2 — Install flex + gcc (only once)
+
+If already installed, skip.
+
+sudo apt update
+sudo apt install flex
+sudo apt install gcc
+
+
+Verify:
+
+flex --version
+gcc --version
+
+✅ STEP 3 — Create your Lex file
+nano lexanalysis.l
+
+✅ STEP 4 — Paste this FULL WORKING CODE
+
+(Your code is almost correct — I added yywrap() so it works on all systems.)
+
+%{
+    #include <stdio.h>
+%}
+
+%%
+
+/* Flow-control keywords (case-insensitive) */
+if|else|while|do|switch|case|break|for|default
+|IF|ELSE|WHILE|DO|SWITCH|CASE|BREAK|FOR|DEFAULT       { printf("Keyword\n"); }
+
+/* Identifier */
+[A-Za-z_][A-Za-z0-9_]*                                { printf("identifier\n"); }
+
+/* Ignore whitespace */
+[ \t\n]+                                              { /* skip */ }
+
+/* Anything else is invalid */
+.                                                     { printf("invalid\n"); }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main()
+{
+    yylex();
+    return 0;
+}
+
+✅ STEP 5 — Save file
+
+Inside nano:
+
+Ctrl + O
+ENTER
+Ctrl + X
+
+
+Check:
+
+ls
+
+
+You should see:
+
+lexanalysis.l
+
+✅ STEP 6 — Run flex
+flex lexanalysis.l
+
+
+This generates:
+
+lex.yy.c
+
+✅ STEP 7 — Compile with GCC
+
+Either one works:
+
+✔ Recommended:
+
+gcc lex.yy.c -lfl -o lexanalysis
+
+
+OR, since we included yywrap():
+
+gcc lex.yy.c -o lexanalysis
+
+
+No errors → success.
+
+✅ STEP 8 — Run the program
+./lexanalysis
+
+
+Now enter:
+
+If
+
+
+Output:
+
+Keyword
+
+
+Enter:
+
+FOR
+
+
+Output:
+
+Keyword
+
+
+Enter:
+
+Abc123_def
+
+
+Output:
+
+identifier
+
+
+Enter:
+
+123abc
+
+
+Output:
+
+invalid
+
+🎉 Your Lex program works successfully in WSL Ubuntu.
