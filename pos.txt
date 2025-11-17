@@ -1,0 +1,118 @@
+STEP 0 — Open Ubuntu (WSL)
+
+Open the app named:
+
+Ubuntu
+
+
+Now you have a Linux terminal.
+
+✅ STEP 1 — Install FLEX + GCC (Only once)
+
+Run these commands:
+
+sudo apt update
+sudo apt install flex
+sudo apt install gcc
+
+
+Verify installation:
+
+flex --version
+gcc --version
+
+
+If both show version numbers → good to go.
+
+✅ STEP 2 — Create your LEX file
+
+Run:
+
+nano program.l
+
+
+You are now inside the nano editor.
+
+✅ STEP 3 — Paste the FULL working LEX code
+
+Paste the following EXACT code:
+
+%{
+#include <stdio.h>
+%}
+
+%%
+
+"-"[0-9]+                { printf("%s : negative integer\n", yytext); }
+
+"+"?[0-9]+\.[0-9]+       { printf("%s : positive real number\n", yytext); }
+
+[0-9]+                   { printf("%s : integer\n", yytext); }
+
+.                        { /* ignore other characters */ }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main() {
+    yylex();
+    return 0;
+}
+
+✅ STEP 4 — Save the file in nano
+
+Press:
+
+Ctrl + O
+ENTER
+Ctrl + X
+
+
+Your file program.l is now saved.
+
+Check:
+
+ls
+
+
+You should see:
+
+program.l
+
+✅ STEP 5 — Generate the C code using flex
+
+Run:
+
+flex program.l
+
+
+This creates:
+
+lex.yy.c
+
+
+Check:
+
+ls
+
+
+Now you will see:
+
+program.l  lex.yy.c
+
+✅ STEP 6 — Compile using GCC
+
+This command handles the previous yywrap error:
+
+gcc lex.yy.c -lfl -o program
+
+
+OR you can use:
+
+gcc lex.yy.c -o program
+
+
+(because we included our own yywrap())
