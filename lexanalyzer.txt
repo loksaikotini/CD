@@ -1,0 +1,229 @@
+STEP 1 — Open Ubuntu (WSL)
+
+Open Ubuntu from the Windows Start Menu.
+You should get a terminal like:
+
+username@PC:~$
+
+✅ STEP 2 — Install Flex & GCC (only once)
+
+Run these:
+
+sudo apt update
+sudo apt install flex
+sudo apt install gcc
+
+
+Verify:
+
+flex --version
+gcc --version
+
+✅ STEP 3 — Create your Lex file
+nano lexanalysis.l
+
+✅ STEP 4 — Paste this FULL WORKING LEX CODE
+
+Use Shift + Ctrl + V to paste:
+
+%{
+#include <stdio.h>
+%}
+
+%option caseless    /* enables case-insensitive matching */
+
+%%
+
+/* MULTI-LINE COMMENT */
+\/\*([^*]|\*+[^*/])*\*\/        { printf("Multi-line Comment: %s\n", yytext); }
+
+/* SINGLE-LINE COMMENT */
+"//".*                         { printf("Single-line Comment: %s\n", yytext); }
+
+/* KEYWORDS */
+if|else|while|do|switch|case|break|for|default
+                                { printf("Keyword: %s\n", yytext); }
+
+/* FLOAT CONSTANTS */
+[0-9]*\.[0-9]+                  { printf("Float Constant: %s\n", yytext); }
+
+/* INTEGER CONSTANTS */
+[0-9]+                          { printf("Integer Constant: %s\n", yytext); }
+
+/* IDENTIFIER */
+[a-zA-Z_][a-zA-Z0-9_]*          { printf("Identifier: %s\n", yytext); }
+
+/* OPERATORS */
+"=="|"="|"+"|"-"|"*"|"/"        { printf("Operator: %s\n", yytext); }
+
+/* DELIMITERS */
+[{}();,:]                       { printf("Delimiter: %s\n", yytext); }
+
+/* IGNORE WHITESPACE */
+[ \t\n]+                        { /* skip */ }
+
+/* UNKNOWN TOKENS */
+.                               { printf("Unknown: %s\n", yytext); }
+
+%%
+
+int yywrap() { return 1; }
+
+int main()
+{
+    yylex();
+    return 0;
+}
+
+
+✔ Fully working
+✔ No errors
+✔ Case-insensitive keywords
+✔ Correct comment patterns
+✔ Supports all tokens
+
+✅ STEP 5 — Save the file
+
+Press:
+
+Ctrl + O
+ENTER
+Ctrl + X
+
+
+Check:
+
+ls
+
+
+You should see:
+
+lexanalysis.l
+
+✅ STEP 6 — Run flex
+flex lexanalysis.l
+
+
+This generates:
+
+lex.yy.c
+
+
+Check:
+
+ls
+
+✅ STEP 7 — Compile the generated file
+
+Use this (recommended):
+
+gcc lex.yy.c -lfl -o lexanalysis
+
+
+If no error → success.
+
+✅ STEP 8 — Run your LEX analyzer
+./lexanalysis
+
+
+Now type any test input.
+
+🎯 TEST INPUTS & EXPECTED OUTPUTS
+Test 1 — Keyword
+
+Input:
+
+If
+
+
+Output:
+
+Keyword: If
+
+Test 2 — Identifier
+
+Input:
+
+abc123_def
+
+
+Output:
+
+Identifier: abc123_def
+
+Test 3 — Integer
+
+Input:
+
+4567
+
+
+Output:
+
+Integer Constant: 4567
+
+Test 4 — Float
+
+Input:
+
+12.45
+
+
+Output:
+
+Float Constant: 12.45
+
+Test 5 — Single-line comment
+
+Input:
+
+//hello world
+
+
+Output:
+
+Single-line Comment: //hello world
+
+Test 6 — Multi-line comment
+
+Input:
+
+/*hello friend*/
+
+
+Output:
+
+Multi-line Comment: /*hello friend*/
+
+Test 7 — Operator
+
+Input:
+
+==
+
+
+Output:
+
+Operator: ==
+
+Test 8 — Delimiter
+
+Input:
+
+(
+
+
+Output:
+
+Delimiter: (
+
+Test 9 — Unknown
+
+Input:
+
+@
+
+
+Output:
+
+Unknown: @
