@@ -1,0 +1,145 @@
+STEP 1 — Open Ubuntu (WSL)
+
+Open the Ubuntu app from the Start Menu.
+
+You should see:
+
+username@DESKTOP:~$
+
+✅ STEP 2 — Install flex and gcc (only once)
+sudo apt update
+sudo apt install flex
+sudo apt install gcc
+
+
+Verify:
+
+flex --version
+gcc --version
+
+✅ STEP 3 — Create your Lex file
+nano days.l
+
+✅ STEP 4 — Paste this FULL WORKING code
+
+(Has no errors, includes yywrap)
+
+%{
+    #include <stdio.h>
+    int year;
+    void leap();
+%}
+
+%%
+
+jan|mar|may|jul|aug|oct|dec      { printf("31 days\n"); }
+apr|jun|sep|nov                  { printf("30 days\n"); }
+feb                               { leap(); }
+[a-zA-Z]+                         { printf("invalid\n"); }
+
+%%
+
+int yywrap() {
+    return 1;
+}
+
+int main()
+{
+    yylex();
+    return 0;
+}
+
+void leap()
+{
+    printf("enter year: ");
+    scanf("%d", &year);
+
+    if ((year % 400 == 0) || (year % 4 == 0 && year % 100 != 0))
+        printf("29 days\n");
+    else
+        printf("28 days\n");
+}
+
+✅ STEP 5 — Save the file properly
+
+Inside nano:
+
+Ctrl + O
+ENTER
+Ctrl + X
+
+
+Check:
+
+ls
+
+
+You should see:
+
+days.l
+
+✅ STEP 6 — Run flex
+flex days.l
+
+
+This creates:
+
+lex.yy.c
+
+✅ STEP 7 — Compile the generated C file
+
+There are 2 ways, choose ANY ONE:
+
+✔ Method 1 (recommended):
+gcc lex.yy.c -lfl -o days
+
+✔ Method 2 (because we added yywrap):
+gcc lex.yy.c -o days
+
+✅ STEP 8 — Run the program
+./days
+
+🎉 NOW TEST IT
+Input:
+jan
+
+
+Output:
+
+31 days
+
+Input:
+june
+
+
+(jun is correct — june is invalid because your pattern is "jun")
+
+Output:
+
+invalid
+
+Input:
+jun
+
+
+Output:
+
+30 days
+
+Input:
+feb
+
+
+Program asks:
+
+enter year: 
+
+
+Enter:
+
+1984
+
+
+Output:
+
+29 days
