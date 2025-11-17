@@ -1,0 +1,164 @@
+PART 1 — Install PuTTY in Windows
+✅ Step 1: Download PuTTY
+
+Download from official website:
+
+🔗 https://www.putty.org/
+
+Click Download PuTTY Installer and install it.
+
+⭐ PART 2 — Connect to Linux using PuTTY
+
+You need:
+
+Linux server IP (example: 192.168.1.10 or cloud server IP)
+
+Username (example: ubuntu)
+
+Password
+
+✅ Step 1: Open PuTTY
+
+You see a window with “Host Name (or IP address)”.
+
+✅ Step 2: Enter your Linux server details
+
+Example:
+
+Host Name: 192.168.1.10
+Port: 22
+Connection type: SSH
+
+✅ Step 3: Click Open
+✅ Step 4: Login
+
+When prompted:
+
+login as: ubuntu
+password: *****
+
+
+Now you are inside the Linux terminal.
+
+⭐ PART 3 — Install COMPILERS on the Linux server
+
+Once logged in through PuTTY, run these commands:
+
+✅ Step 1: Update system
+sudo apt update
+
+✅ Step 2: Install FLEX (Lex compiler)
+sudo apt install flex
+
+✅ Step 3: Install GCC (C Compiler)
+sudo apt install gcc
+
+
+Optional but helpful:
+
+sudo apt install build-essential
+
+
+Verify installation:
+
+flex --version
+gcc --version
+
+⭐ PART 4 — Create Your Lex File in PuTTY
+
+In PuTTY terminal:
+
+nano wordcount.l
+
+
+This opens the nano editor.
+
+Now paste your working lex code:
+
+⭐ FULL WORKING LEX CODE (Word Count Program)
+%{
+#include <stdio.h>
+
+int wordCount = 0;
+int lineCount = 0;
+%}
+
+%%
+
+\n              { lineCount++; }
+[ \t]+          { /* ignore spaces/tabs */ }
+[a-zA-Z0-9_]+   { wordCount++; }
+.               { /* ignore all other characters */ }
+
+%%
+
+int yywrap() { return 1; }
+
+int main() {
+    printf("Enter text:\n");
+    yylex();
+    printf("\nTotal Lines : %d\n", lineCount);
+    printf("Total Words : %d\n", wordCount);
+    return 0;
+}
+
+⭐ PART 5 — Save the Lex File in PuTTY (Nano)
+
+Inside nano:
+
+Press:
+Ctrl + O
+ENTER
+Ctrl + X
+
+
+Your file wordcount.l is now saved.
+
+⭐ PART 6 — Run FLEX to Generate lex.yy.c
+flex wordcount.l
+
+
+This creates:
+
+lex.yy.c
+
+
+Check using:
+
+ls
+
+⭐ PART 7 — Compile using GCC
+
+Use:
+
+gcc lex.yy.c -lfl -o wordcount
+
+
+✔ -lfl links the Flex library
+✔ Makes output file: wordcount
+
+If no errors → Perfect.
+
+⭐ PART 8 — Run Your Lex Program
+./wordcount
+
+
+Program shows:
+
+Enter text:
+
+
+Now type:
+
+Hello world
+This is a test
+
+
+Then press:
+
+👉 Ctrl + D (END OF INPUT)
+
+Output:
+
+Total Lines : 2
+Total Words : 6
