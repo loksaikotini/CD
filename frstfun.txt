@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <string.h>
+char fE[10], fT[10], fF[10];
+void add(char *set, char c) {
+    if (!strchr(set, c)) {
+        int n = strlen(set);
+        set[n] = c;
+        set[n + 1] = '\0';
+    }
+}
+void first_F() {
+    add(fF, '(');   // F ? (E)
+    add(fF, 'i');   // F ? id
+}
+void first_T() {
+    first_F();      
+    strcpy(fT, fF); // T ? F
+}
+void first_E() {
+    first_T();
+    strcpy(fE, fT); // E ? T
+}
+int main() {
+    fE[0] = fT[0] = fF[0] = '\0';  // initialize
+    first_E();
+    printf("FIRST(E) = { %s }\n", fE);
+    printf("FIRST(T) = { %s }\n", fT);
+    printf("FIRST(F) = { %s }\n", fF);
+    return 0;
+}
